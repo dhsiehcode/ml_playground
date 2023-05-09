@@ -5,10 +5,25 @@ import cv2
 
 
 
+def combine_train(labeled_img_path):
+    classes = os.listdir(labeled_img_path)
+    combined_path = []
 
+    for c in classes:
+        combined_path.append(os.listdir(os.path.join(labeled_img_path, c)))
 
+    return np.asarray(combined_path)
 
-def img_to_numpy_arr(labeled_img_path, num_imgs):
+def img_to_numpy_arr(imgs_path, num_imgs):
+
+    labels = []
+
+    for f in os.listdir(imgs_path[:num_imgs]):
+        labels.append(np.array(Image.open(f)))
+
+    return labels
+
+def img_dir_to_numpy_arr(labeled_img_path, num_imgs):
 
     labels = []
 
@@ -32,4 +47,8 @@ def img_to_numpy_arr(labeled_img_path, num_imgs):
 
 
 def rgb_to_grayscale(imgs):
+    output = []
+    for img in imgs:
+        output.append(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
 
+    return np.asarray(output)
