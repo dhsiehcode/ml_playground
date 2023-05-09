@@ -19,14 +19,11 @@ def show_imgs(imgs):
 
     # if it is an array
     if isinstance(imgs[0], np.ndarray):
-        if n_images >= 5:
-            n_images = 5
+        if n_images >= 4:
+            n_images = 4
         fig, ax = plt.subplots(1, n_images)
 
-        print(n_images)
-
         for i in range(n_images):
-            print(imgs[i])
 
             img = imgs[i].reshape((150,150))
             ax[i].imshow(img, cmap='gray')
@@ -99,7 +96,11 @@ def img_to_numpy_arr(imgs_path, num_imgs):
     labels = []
 
     for f in os.listdir(imgs_path[:num_imgs]):
-        labels.append(np.array(Image.open(f)))
+
+        # filter out image of incorrect size
+        img = np.array(Image.open(f))
+        if img.shape == (150, 150, 3):
+            labels.append(np.array(Image.open(f)))
 
     return labels
 
@@ -132,7 +133,9 @@ def img_dir_to_numpy_arr(labeled_img_path, num_imgs):
         os.chdir(class_path)
         label = []
         for fname in files:
-            label.append((np.array(Image.open(fname))))
+            img = np.array((Image.open(fname)))
+            if img.shape == (150, 150, 3):
+                label.append(img)
         #label = np.array([np.array(Image.open(fname)) for fname in files])
         labels.append(label)
 
