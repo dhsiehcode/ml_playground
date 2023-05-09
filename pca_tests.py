@@ -19,6 +19,8 @@ for i in range(len(files)):
 
     train_labels[i] = tools.rgb_to_grayscale(train_labels[i])
 
+
+
     pca = PCA(n_components)
     new_val = pca.fit_transform(np.asarray(train_labels[i]))
 

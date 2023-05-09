@@ -3,9 +3,34 @@ import numpy as np
 from PIL import Image
 import cv2
 
+def flatten_imgs(imgs):
 
+    '''
+
+    flattens all the images given to be 1D
+
+    :param
+        imgs: list of 1 x N images where each element is a D x D image
+    :return
+        output: 2D array of 1 x N flattened images
+    '''
+
+    output = []
+    for img in imgs:
+        output.append(img.flatten())
+
+    return np.asarray(output)
 
 def combine_train(labeled_img_path):
+    '''
+
+    combineds all images in a directory to one array with the path to all images
+
+    :param
+        labeled_img_path: path to training file where each subdirectory is a class
+    :return:
+        combined_path: an array where each element is the path to an image
+    '''
     classes = os.listdir(labeled_img_path)
     combined_path = []
 
@@ -16,6 +41,16 @@ def combine_train(labeled_img_path):
 
 def img_to_numpy_arr(imgs_path, num_imgs):
 
+    '''
+
+    converts all images specified into numpy arrays
+
+    :param
+        imgs_path: the path for the images
+        num_imgs: number of images
+    :return:
+        labels: list of arrays where each element in an array representing an image
+    '''
     labels = []
 
     for f in os.listdir(imgs_path[:num_imgs]):
@@ -24,6 +59,19 @@ def img_to_numpy_arr(imgs_path, num_imgs):
     return labels
 
 def img_dir_to_numpy_arr(labeled_img_path, num_imgs):
+
+    '''
+
+    converts images from a directory into numpy arrays
+
+    :param
+        labeled_img_path: path to training directory where each subdirectory is a class
+        num_imgs: the number of  images to convert to numpy array
+    :return:
+        labels: list of images base on class. Each element of the list has
+                images from a class. This means each element is a list of arrays where each array represents an image
+
+    '''
 
     labels = []
 
@@ -47,6 +95,15 @@ def img_dir_to_numpy_arr(labeled_img_path, num_imgs):
 
 
 def rgb_to_grayscale(imgs):
+    '''
+
+    converts images from rgb to grayscale
+
+    :param
+        imgs: the list of images to be converted to rgb
+    :return:
+        output: a list of images converted to grayscale
+    '''
     output = []
     for img in imgs:
         output.append(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
