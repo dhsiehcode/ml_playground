@@ -1,7 +1,52 @@
 import os
+
+import numpy
 import numpy as np
 from PIL import Image
 import cv2
+import matplotlib.pyplot as plt
+
+def show_imgs(imgs):
+    '''
+
+    displays the images specified by imgs
+
+    :param
+        imgs: list of images
+    '''
+
+    n_images = len(imgs)
+
+    # if it is an array
+    if isinstance(imgs[0], np.ndarray):
+        if n_images >= 5:
+            n_images = 5
+        fig, ax = plt.subplots(1, n_images)
+
+        print(n_images)
+
+        for i in range(n_images):
+            print(imgs[i])
+
+            img = imgs[i].reshape((150,150))
+            ax[i].imshow(img, cmap='gray')
+
+        plt.tight_layout()
+        plt.show()
+
+    else:
+        if n_images > 5:
+            n_images = 5
+        fig, axs = plt.subplots(1, n_images)
+
+        for i in range(n_images):
+            img = np.array(Image.open(imgs[i])).reshape((150,150))
+            axs[0, i].imshow(img, cmap='gray')
+
+        plt.tight_layout()
+        plt.show()
+
+
 
 def flatten_imgs(imgs):
 
