@@ -6,6 +6,32 @@ from PIL import Image
 import cv2
 import matplotlib.pyplot as plt
 
+def show_compare_imgs(imgs):
+    '''
+
+    shows images to be compared with each other
+
+    :param imgs:
+    :return:
+    '''
+
+    n_images = len(imgs[0])
+
+    if n_images >= 4:
+        n_images = 4
+
+    rows = len(imgs)
+
+    fig, axs = plt.subplots(rows, n_images)
+
+    for row in range(rows):
+        for i in range(n_images):
+            img = imgs[row][i].reshape((150,150))
+            axs[row,i].imshow(img, cmap='gray')
+
+    plt.tight_layout()
+    plt.show()
+
 def show_imgs(imgs):
     '''
 
