@@ -29,7 +29,7 @@ def show_compare_imgs(imgs):
             img = imgs[row][i].reshape((150,150))
             axs[row,i].imshow(img, cmap='gray')
 
-    plt.tight_layout()
+    #plt.tight_layout()
     plt.show()
 
 def show_imgs(imgs):
@@ -120,13 +120,16 @@ def img_to_numpy_arr(imgs_path, num_imgs):
         labels: list of arrays where each element in an array representing an image
     '''
     labels = []
+    files = os.listdir(imgs_path)
+    files = files[:num_imgs]
 
-    for f in os.listdir(imgs_path[:num_imgs]):
+
+    for f in files:
 
         # filter out image of incorrect size
-        img = np.array(Image.open(f))
+        img = np.array(Image.open(os.path.join(imgs_path, f)))
         if img.shape == (150, 150, 3):
-            labels.append(np.array(Image.open(f)))
+            labels.append(img)
 
     return labels
 
@@ -147,21 +150,22 @@ def img_dir_to_numpy_arr(labeled_img_path, num_imgs):
 
     labels = []
 
-    labeled_img_path = labeled_img_path
-    num_imgs = num_imgs
-
     for name in os.listdir(labeled_img_path):
         class_path = os.path.join(labeled_img_path, name)
 
         files = os.listdir(class_path)
-        files = files[:num_imgs]
+        #files = files[:num_imgs]
         #print(files)
         os.chdir(class_path)
         label = []
-        for fname in files:
-            img = np.array((Image.open(fname)))
+        img_count = 0
+        for i in range(len(files)):
+            img = np.array((Image.open(files[i])))
             if img.shape == (150, 150, 3):
                 label.append(img)
+                img_count += 1
+                if img_count >= num_imgs:
+                    break
         #label = np.array([np.array(Image.open(fname)) for fname in files])
         labels.append(label)
 
