@@ -148,6 +148,7 @@ def img_dir_to_numpy_arr(labeled_img_path, num_imgs):
 
     '''
 
+    images = []
     labels = []
 
     for name in os.listdir(labeled_img_path):
@@ -157,19 +158,20 @@ def img_dir_to_numpy_arr(labeled_img_path, num_imgs):
         #files = files[:num_imgs]
         #print(files)
         os.chdir(class_path)
-        label = []
+        image = []
         img_count = 0
         for i in range(len(files)):
             img = np.array((Image.open(files[i])))
             if img.shape == (150, 150, 3):
-                label.append(img)
+                image.append(img)
+                labels.append(name)
                 img_count += 1
                 if img_count >= num_imgs:
                     break
         #label = np.array([np.array(Image.open(fname)) for fname in files])
-        labels.append(label)
+        images.append(image)
 
-    return labels
+    return images, labels
 
 
 def rgb_to_grayscale(imgs):

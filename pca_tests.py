@@ -39,7 +39,14 @@ def kernel_pca_by_class(num_imgs, labeled_img_path, n_components):
 
 def pca_by_class(num_imgs, labeled_img_path, n_components):
 
-    train_labels = tools.img_dir_to_numpy_arr(labeled_img_path, num_imgs)
+    train_images, train_labels = tools.img_dir_to_numpy_arr(labeled_img_path, num_imgs)
+
+
+
+    #print(len(train_images))
+    #print(len(train_images[0]))
+    #print(print(train_images[0][0].shape))
+    #print((train_labels))
 
 
     files = os.listdir(labeled_img_path)
@@ -51,15 +58,16 @@ def pca_by_class(num_imgs, labeled_img_path, n_components):
     ## Regular PCA on each class
 
     for i in range(len(files)):
-        img_dict[files[i]] = train_labels[i]
-        train_labels[i] = tools.rgb_to_grayscale(train_labels[i])
-        flattened_labels = tools.flatten_imgs(train_labels[i])
+        img_dict[files[i]] = train_images[i]
+        train_images[i] = tools.rgb_to_grayscale(train_images[i])
+        flattened_labels = tools.flatten_imgs(train_images[i])
         pca = PCA(n_components)
         pca.fit(flattened_labels)
-        pca_result.append(pca.components_[:n_components])
+        transformed_result = pca.transform(flattened_labels)
+        pca_result.extend(transformed_result)
         #tools.show_compare_imgs([train_labels[i], pca.components_[:n_components]])
 
-    return pca_result
+    return pca_result, train_labels
 
 
 def one_class_pca(num_imgs, labeled_img_path, n_components, type):
@@ -67,7 +75,7 @@ def one_class_pca(num_imgs, labeled_img_path, n_components, type):
 
     labeled_img_path = os.path.join(labeled_img_path, type)
 
-    print(labeled_img_path)
+    #print(labeled_img_path)
 
     train_labels = tools.img_to_numpy_arr(labeled_img_path, num_imgs)
 
