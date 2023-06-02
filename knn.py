@@ -3,6 +3,7 @@ import os
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import model_selection
+from scipy.spatial import distance
 import matplotlib.pyplot as plt
 
 import pca_tests
@@ -17,7 +18,8 @@ Y = []
 num_imgs = 1000
 n_components = 150
 labeled_img_path = "C:\Dennis\Personal\Projects\ml_playground\data\VIP_2022_fall_classification\Train"
-num_neighbors = math.sqrt(num_imgs) #use rule of k = n ^ 1/2
+num_neighbors = int(math.sqrt(num_imgs)) #use rule of k = n ^ 1/2
+dist_metric = distance.mahalanobis()
 
 X, Y = pca_tests.pca_by_class(num_imgs, labeled_img_path, n_components)
 

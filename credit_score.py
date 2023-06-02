@@ -24,7 +24,9 @@ def pca(p):
 
 from sklearn.cluster import KMeans
 
+from sklearn.svm import SVC
 
+def svm
 
 
 

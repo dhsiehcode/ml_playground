@@ -12,6 +12,8 @@ img_path = "C:\Dennis\Personal\Projects\ml_playground\data\VIP_2022_fall_classif
 
 dirs = os.listdir(img_path)
 
+show_dt = False
+
 X = []
 Y = []
 num_imgs = 1000
@@ -24,25 +26,7 @@ X, Y = pca_tests.pca_by_class(num_imgs, labeled_img_path, n_components)
 
 
 # for working with directories
-'''
-for dir in dirs:
-    p = os.path.join(img_path, dir)
-    files = os.listdir(p)
-    img_count = 0
-    for f in files:
-        if f.endswith('.jpg'):
-            img = np.array((Image.open(os.path.join(p, f))))
-            if img.shape == (150, 150, 3):
-                X.append(img)
-                Y.append(dir)
-                img_count += 1
-                if img_count >= num_imgs:
-                    break
 
-for i in range(len(X)):
-    X[i] = X[i].reshape(-1)
-    
-'''
 
 #assert(len(X) == len(Y))
 
@@ -65,13 +49,17 @@ clf.fit(X_train, Y_train)
 #print(X_train.shape[1])
 #print(dirs)
 
-fig = plt.figure(figsize=(55,50))
-_ = tree.plot_tree(clf,
-                   feature_names= range(X_train.shape[1]),
-                   class_names= dirs,
-                   filled=True)
+if show_dt:
 
-fig.savefig("decision_tree.png")
+    fig = plt.figure(figsize=(55,50))
+    tree.plot_tree(clf,
+                       feature_names= range(X_train.shape[1]),
+                       class_names= dirs,
+                       filled=True)
+
+    plt.show()
+
+    fig.savefig("decision_tree.png")
 
 
 

@@ -1,10 +1,20 @@
 import os
-
+import pandas as pd
 import numpy
 import numpy as np
 from PIL import Image
 import cv2
 import matplotlib.pyplot as plt
+
+
+def import_data(path):
+
+    df = pd.read_csv(path)
+
+    col = df.columns
+
+
+    return df
 
 def show_compare_imgs(imgs):
     '''
@@ -107,7 +117,7 @@ def combine_train(labeled_img_path):
 
     return np.asarray(combined_path)
 
-def img_to_numpy_arr(imgs_path, num_imgs):
+def img_to_numpy_arr(imgs_path, num_imgs = 0, required_shape = (0,0,0)):
 
     '''
 
@@ -121,17 +131,27 @@ def img_to_numpy_arr(imgs_path, num_imgs):
     '''
     labels = []
     files = os.listdir(imgs_path)
-    files = files[:num_imgs]
+    if num_imgs != 0:
+        files = files[:num_imgs]
 
 
-    for f in files:
+    if required_shape != (0,0,0):
 
-        # filter out image of incorrect size
-        img = np.array(Image.open(os.path.join(imgs_path, f)))
-        if img.shape == (150, 150, 3):
+
+        for f in files:
+
+            # filter out image of incorrect size
+            img = np.array(Image.open(os.path.join(imgs_path, f)))
+            if img.shape == required_shape:
+                labels.append(img)
+
+    else:
+        for f in files:
+            # filter out image of incorrect size
+            img = np.array(Image.open(os.path.join(imgs_path, f)))
             labels.append(img)
 
-    return labels
+    return np.asarray(labels)
 
 def img_dir_to_numpy_arr(labeled_img_path, num_imgs):
 
