@@ -1,8 +1,12 @@
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import os
 from sklearn.decomposition import PCA, KernelPCA
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
 import cv2
 from PIL import Image
 
@@ -85,7 +89,6 @@ def show_pca_diff(yes_imgs, no_imgs, components = 20):
 
     return yes_x, no_x
 
-
 def pca(yes_imgs, no_imgs, components = 20):
 
     pca = PCA(n_components=components)
@@ -95,6 +98,27 @@ def pca(yes_imgs, no_imgs, components = 20):
     no_x = pca.fit_transform(no_imgs)
 
     return yes_x, no_x
+
+def knn(yes_imgs, no_imgs):
+
+    yes_label = np.zeros(len(yes_imgs))
+    no_label = np.ones(len(no_imgs))
+
+    final_label = np.concatenate((yes_label, no_label))
+    final_imgs = np.concatenate((yes_imgs, no_imgs))
+
+    assert(final_label.shape[0] == final_imgs.shape[0])
+
+    X_train, X_test, y_train, y_test = train_test_split(final_imgs, final_label, test_size = 0.15, random_state = 42)
+
+    knn = KNeighborsClassifier(n_neighbors=int(math.sqrt(X_train.shape[0])))
+
+    knn.fit(X_train, y_train)
+
+    print(knn.score(X_test, y_test))
+
+
+
 
 if __name__ == '__main__':
 
@@ -110,6 +134,8 @@ if __name__ == '__main__':
 
     #show_pca_diff(yes_imgs, no_imgs, 40)
     #show_scree_plot()
+
+    knn(yes_imgs, no_imgs)
 
 
 
