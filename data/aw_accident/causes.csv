@@ -1,0 +1,17 @@
+id,0,cause,1
+3,3,"Caught in Low Head Dam Hydraulic","Caught in Low Head Dam Hydraulic"
+4,4,"Caught in a Natural Hydraulic","Caught in a Natural Hydraulic"
+6,6,"Equipment Trap","Equipment Trap"
+7,7,"Flush Drowning","Flush Drowning"
+8,8,"Foot Entrapment","Foot Entrapment"
+10,10,Impact/Trauma,Impact/Trauma
+11,11,Other,Other
+12,12,"Swim into Rock or Sieve","Swim into Rock or Sieve"
+13,13,"Swim into Strainer","Swim into Strainer"
+14,14,"Pinned in Boat Against Strainer","Pinned in Boat Against Strainer"
+15,15,"Pinned in Boat against Rock or Sieve","Pinned in Boat against Rock or Sieve"
+16,16,Unknown,Unknown
+17,17,"Vertical Pin","Vertical Pin"
+18,18,"Health Problem","Health Problem"
+86,86,"PFD Not Worn or Present","PFD Not Worn or Present"
+87,87,"PFD Fell Off","PFD Fell Off"
