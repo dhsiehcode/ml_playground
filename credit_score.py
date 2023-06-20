@@ -83,6 +83,35 @@ def get_data(df):
     return train_test_split(X, y, train_size=0.7, test_size=0.3)
 
 
+def data_visualization(df):
+    fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows=3, ncols=3)
+
+    # showing gender
+
+
+    ax1.bar(x = df['CODE_GENDER'].count)
+    ax1.set_title('Gender Bar Chart')
+
+    ax2.bar(x = df['FLAG_OWN_CAR'].count)
+    ax2.set_title('Owns Car')
+
+    ax3.bar(x = df['FLAG_OWN_REALTY'].count)
+    ax3.set_title('Owns Reality')
+
+    ax4.bar(x = df['FLAG_MOBIL'].count)
+    ax4.set_title('Provides mobile number')
+
+    ax5.bar(x = df['FLAG_WORK_PHONE'].count)
+    ax5.set_title('Provides work phone')
+
+    ax6.bar(x = df['FLAG_PHONE'].count)
+    ax6.set_title('Provides home phone')
+
+    ax7.bar(x = df['FLAG_EMAIL'].count)
+    ax7.set_title('Provides  email')
+
+    fig.show()
+
 
 if __name__ == '__main__':
 
