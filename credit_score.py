@@ -19,10 +19,6 @@ def get_y(df):
 
     y_labels = {}
 
-    y_labels_np = np.empty((unique_id.shape[0], 2))
-
-    loc = 0
-
     for id in unique_id:
         temp = df[df['ID'] == id]
 
@@ -49,6 +45,27 @@ def clean_data(record, outcome):
     #print(result)
 
     result.dropna(axis = 0, how='any', subset=['OUTCOME'])
+
+    result.fillna(axis=0, value={'OCCUPATION_TYPE':'Unknown'}, inplace=True)
+
+    ## Convert to discrete (such as age and employment) if necessary
+
+    convert_to_discrete = False
+
+    if (convert_to_discrete):
+        result['DAYS_BIRTH'] = -1 * result['DAYS_BIRTH'] / 356
+
+        # -1 Represents employed
+        result[result['DAYS_EMPLOYED'] < 0] = -1
+        # 1 Represenets unemployed
+        result[result['DAYS_EMPLOYED'] > 0] = 1
+        # Negative number represents years unemployed
+        #result[result['DAYS_EMPLOYED'] > 0] = result[result['DAYS_EMPLOYED'] < 0] * -1 / 365
+
+        # Divide salaries into 10 based on max and min
+
+
+
 
 
     # drop ID if necessary
