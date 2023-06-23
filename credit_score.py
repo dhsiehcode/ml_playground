@@ -89,39 +89,83 @@ def data_visualization(df):
     # showing gender
 
 
-    ax1.bar(x = df['CODE_GENDER'].count)
+
+    ax1.bar(x = df['CODE_GENDER'].value_counts().keys().to_numpy(), height = df['CODE_GENDER'].value_counts())
     ax1.set_title('Gender Bar Chart')
 
-    ax2.bar(x = df['FLAG_OWN_CAR'].count)
+    ax2.bar(x = df['FLAG_OWN_CAR'].value_counts().keys(), height = df['FLAG_OWN_CAR'].value_counts())
     ax2.set_title('Owns Car')
 
-    ax3.bar(x = df['FLAG_OWN_REALTY'].count)
+    ax3.bar(x = df['FLAG_OWN_REALTY'].value_counts().keys(), height = df['FLAG_OWN_CAR'].value_counts())
     ax3.set_title('Owns Reality')
 
-    ax4.bar(x = df['FLAG_MOBIL'].count)
+    ax4.bar(x = df['FLAG_MOBIL'].value_counts().keys().to_numpy(), height = df['FLAG_OWN_CAR'].value_counts())
     ax4.set_title('Provides mobile number')
 
-    ax5.bar(x = df['FLAG_WORK_PHONE'].count)
+    ax5.bar(x = df['FLAG_WORK_PHONE'].value_counts().keys(), height = df['FLAG_WORK_PHONE'].value_counts())
     ax5.set_title('Provides work phone')
 
-    ax6.bar(x = df['FLAG_PHONE'].count)
+    ax6.bar(x = df['FLAG_PHONE'].value_counts().keys(), height = df['FLAG_PHONE'].value_counts())
     ax6.set_title('Provides home phone')
 
-    ax7.bar(x = df['FLAG_EMAIL'].count)
+    ax7.bar(x = df['FLAG_EMAIL'].value_counts().keys(), height = df['FLAG_EMAIL'].value_counts())
     ax7.set_title('Provides  email')
 
-    fig.show()
+    ax8.bar(x = df['CNT_CHILDREN'].value_counts().keys(), height = df['CNT_CHILDREN'].value_counts())
+    ax8.set_title('Number of Children')
+
+    unemployed = df[df['DAYS_EMPLOYED'] > 0]
+    employed = df[df['DAYS_EMPLOYED'] < 0]
+
+    print(employed.head())
+    print(unemployed.head())
+    ax9.bar(x = ['Employed', 'Unemployed'], height = [employed.shape[0], unemployed.shape[0]])
+    ax9.set_title('Employment')
+
+    plt.tight_layout()
+
+    fig.savefig('credit_score_bar_chart.png')
+
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2)
+
+    id_birth = df[['ID', 'DAYS_BIRTH']]
+    id_birth.sort_index(inplace=True)
+    ax1.scatter(id_birth['ID'], id_birth['DAYS_BIRTH'])
+    ax1.set_title('Birth Date')
+
+    id_employed = df[[ 'ID', 'DAYS_EMPLOYED']]
+    id_employed = id_employed[id_employed['DAYS_EMPLOYED'] < 0]
+    id_employed.sort_index(inplace=True)
+    ax2.scatter(id_employed['ID'], id_employed['DAYS_EMPLOYED'])
+    ax2.set_title('Days Employed')
+
+    id_unemployed = df[['ID', 'DAYS_EMPLOYED']]
+    id_unemployed = id_unemployed[id_unemployed['DAYS_EMPLOYED'] > 0]
+    id_unemployed.sort_index(inplace=True)
+    ax3.scatter(id_unemployed['ID'], id_unemployed['DAYS_EMPLOYED'])
+    ax4.set_title('Days Unemployed')
+
+    id_income = df[['ID', 'AMT_INCOME_TOTAL']]
+    id_income.sort_index(inplace=True)
+    ax4.scatter(id_income['ID'], id_income['AMT_INCOME_TOTAL'])
+    ax4.set_title('Income')
+
+    plt.tight_layout()
+
+    fig.savefig('credit_score_plots')
 
 
 if __name__ == '__main__':
 
-    outcome = tools.import_data(applicant_outcome)
+    #outcome = tools.import_data(applicant_outcome)
 
     record = tools.import_data(applicant_record)
 
-    y_label = get_y(outcome)
+    #y_label = get_y(outcome)
 
-    combined = clean_data(record,y_label)
+    #combined = clean_data(record,y_label)
+
+    data_visualization(record)
 
     exit(0)
 
