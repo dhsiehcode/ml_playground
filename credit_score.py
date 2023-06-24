@@ -71,7 +71,11 @@ def clean_data(record, outcome):
         # Divide salaries into 10 based on max and min
 
 
+    ## Encoe categorical variables
 
+    result = pd.get_dummies(result,columns=['CODE_GENDER', 'FLAG_OWN_CAR', 'FLAG_OWN_REALTY', 'NAME_INCOME_TYPE', 'NAME_EDUCATION_TYPE',
+                                            'NAME_FAMILY_STATUS', 'NAME_HOUSING_TYPE', 'FLAG_MOBIL', 'FLAG_WORK_PHONE', 'FLAG_PHONE',
+                                            'FLAG_EMAIL', 'OCCUPATION_TYPE', 'CNT_FAM_MEMBERS'], dtype=int)
 
 
     # drop ID if necessary
