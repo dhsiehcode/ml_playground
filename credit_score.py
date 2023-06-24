@@ -3,15 +3,16 @@ import pandas as pd
 import tools
 from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA, KernelPCA
+from sklearn.preprocessing import LabelEncoder
+from sklearn.naive_bayes import GaussianNB
 import matplotlib.pyplot as plt
 
 applicant_record = 'C:\Dennis\Personal\Projects\ml_playground\data\credit_score\\application_record.csv'
 
 applicant_outcome = 'C:\Dennis\Personal\Projects\ml_playground\data\credit_score\\credit_record.csv'
 
+
 def get_y(df):
-
-
 
     # sort the IDS first
 
@@ -36,6 +37,7 @@ def get_y(df):
 
 # get rid of rows that don't exist
 
+
 def clean_data(record, outcome):
 
     result = record.join(outcome, on = 'ID')
@@ -47,6 +49,10 @@ def clean_data(record, outcome):
     result.dropna(axis = 0, how='any', subset=['OUTCOME'])
 
     result.fillna(axis=0, value={'OCCUPATION_TYPE':'Unknown'}, inplace=True)
+
+    ## drops all other nan
+
+    result.dropna(axis=0, how='any', inplace=True)
 
     ## Convert to discrete (such as age and employment) if necessary
 
@@ -69,7 +75,7 @@ def clean_data(record, outcome):
 
 
     # drop ID if necessary
-    result.drop(labels='ID')
+    result.drop(columns=['ID'])
 
     return result
 
@@ -78,7 +84,7 @@ def get_data(df):
 
 
     y = df['OUTCOME']
-    X = df[:, :df.shape[1] - 1]
+    X = df.iloc[:, :(df.shape[1] - 1)]
 
     return train_test_split(X, y, train_size=0.7, test_size=0.3)
 
@@ -117,8 +123,6 @@ def data_visualization(df):
     unemployed = df[df['DAYS_EMPLOYED'] > 0]
     employed = df[df['DAYS_EMPLOYED'] < 0]
 
-    print(employed.head())
-    print(unemployed.head())
     ax9.bar(x = ['Employed', 'Unemployed'], height = [employed.shape[0], unemployed.shape[0]])
     ax9.set_title('Employment')
 
@@ -155,17 +159,34 @@ def data_visualization(df):
     fig.savefig('credit_score_plots')
 
 
+def NBC(X_train, X_test, y_train, y_test):
+
+    NBC = GaussianNB()
+
+
+
+    NBC.fit(X_train, y_train)
+
+    print(NBC.score(X_test, y_test))
+
+
 if __name__ == '__main__':
 
-    #outcome = tools.import_data(applicant_outcome)
+    outcome = tools.import_data(applicant_outcome)
 
     record = tools.import_data(applicant_record)
 
-    #y_label = get_y(outcome)
+    y_label = get_y(outcome)
 
-    #combined = clean_data(record,y_label)
+    combined = clean_data(record,y_label)
 
-    data_visualization(record)
+    X_train, X_test, y_train, y_test = get_data(combined)
+
+    NBC(X_train, X_test, y_train, y_test)
+
+    #data_visualization(record)
+
+
 
     exit(0)
 
