@@ -4,6 +4,7 @@ import tools
 from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA, KernelPCA
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OrdinalEncoder
 from sklearn.naive_bayes import GaussianNB
 import matplotlib.pyplot as plt
 
@@ -38,7 +39,7 @@ def get_y(df):
 # get rid of rows that don't exist
 
 
-def clean_data(record, outcome):
+def clean_and_get_data(record, outcome):
 
     result = record.join(outcome, on = 'ID')
 
@@ -73,22 +74,41 @@ def clean_data(record, outcome):
 
     ## Encoe categorical variables
 
-    result = pd.get_dummies(result,columns=['CODE_GENDER', 'FLAG_OWN_CAR', 'FLAG_OWN_REALTY', 'NAME_INCOME_TYPE', 'NAME_EDUCATION_TYPE',
-                                            'NAME_FAMILY_STATUS', 'NAME_HOUSING_TYPE', 'FLAG_MOBIL', 'FLAG_WORK_PHONE', 'FLAG_PHONE',
-                                            'FLAG_EMAIL', 'OCCUPATION_TYPE', 'CNT_FAM_MEMBERS'], dtype=int)
+    #result = pd.get_dummies(result,columns=['CODE_GENDER', 'FLAG_OWN_CAR', 'FLAG_OWN_REALTY', 'NAME_INCOME_TYPE', 'NAME_EDUCATION_TYPE',
+                                            #'NAME_FAMILY_STATUS', 'NAME_HOUSING_TYPE', 'FLAG_MOBIL', 'FLAG_WORK_PHONE', 'FLAG_PHONE',
+                                            #'FLAG_EMAIL', 'OCCUPATION_TYPE', 'CNT_FAM_MEMBERS'], dtype=int)
+
+    #result
 
 
     # drop ID if necessary
     result.drop(columns=['ID'])
 
-    return result
+    y = result['OUTCOME']
+    le = LabelEncoder()
+    le.fit(y)
+    y = le.transform(y)
+    #exit(0)
+    X = result.iloc[:, :(result.shape[1] - 1)]
 
+    income_categorical, income_bins = pd.cut(x = X['AMT_INCOME_TOTAL'], bins = 10, labels=False, retbins=True)
+    birth_categorical, birth_bins = pd.cut(x = X['DAYS_BIRTH'], bins = 10, labels=False, retbins=True)
+    employed_categorical, employed_bins = pd.cut(x = X['DAYS_EMPLOYED'], bins = 10, labels=False, retbins=True)
 
-def get_data(df):
+    X['AMT_INCOME_TOTAL'] = income_categorical
+    X['DAYS_BIRTH'] = birth_categorical
+    X['DAYS_EMPLOYED'] = employed_categorical
 
+    oe = OrdinalEncoder()
 
-    y = df['OUTCOME']
-    X = df.iloc[:, :(df.shape[1] - 1)]
+    for col in X.columns:
+        X[col] = oe.fit_transform(X[col].to_numpy(copy=True).reshape(-1,1)).reshape(-1)
+    #X['AMT_INCOME_TOTAL'] = oe.fit_transform(X['AMT_INCOME_TOTAL'].to_numpy(copy = True).reshape(-1,1)).reshape(-1)
+    #X['DAYS_BIRTH'] = oe.fit_transform(X['DAYS_BIRTH'].to_numpy(copy = True).reshape(-1, 1)).reshape(-1)
+    #X['DAYS_EMPLOYED'] = oe.fit_transform(X['DAYS_EMPLOYED'].to_numpy(copy = True).reshape(-1, 1)).reshape(-1)
+
+    print(X.head(5))
+
 
     return train_test_split(X, y, train_size=0.7, test_size=0.3)
 
@@ -182,9 +202,9 @@ if __name__ == '__main__':
 
     y_label = get_y(outcome)
 
-    combined = clean_data(record,y_label)
+    X_train, X_test, y_train, y_test = clean_and_get_data(record,y_label)
 
-    X_train, X_test, y_train, y_test = get_data(combined)
+    exit(0)
 
     NBC(X_train, X_test, y_train, y_test)
 
