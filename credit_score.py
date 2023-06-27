@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA, KernelPCA
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OrdinalEncoder
-from sklearn.naive_bayes import GaussianNB
+from sklearn import naive_bayes
 import matplotlib.pyplot as plt
 
 applicant_record = 'C:\Dennis\Personal\Projects\ml_playground\data\credit_score\\application_record.csv'
@@ -82,7 +82,7 @@ def clean_and_get_data(record, outcome):
 
 
     # drop ID if necessary
-    result.drop(columns=['ID'])
+    result.drop(columns=['ID'], inplace=True)
 
     y = result['OUTCOME']
     le = LabelEncoder()
@@ -107,7 +107,7 @@ def clean_and_get_data(record, outcome):
     #X['DAYS_BIRTH'] = oe.fit_transform(X['DAYS_BIRTH'].to_numpy(copy = True).reshape(-1, 1)).reshape(-1)
     #X['DAYS_EMPLOYED'] = oe.fit_transform(X['DAYS_EMPLOYED'].to_numpy(copy = True).reshape(-1, 1)).reshape(-1)
 
-    print(X.head(5))
+    #print(X.head(5))
 
 
     return train_test_split(X, y, train_size=0.7, test_size=0.3)
@@ -185,13 +185,54 @@ def data_visualization(df):
 
 def NBC(X_train, X_test, y_train, y_test):
 
-    NBC = GaussianNB()
+
+
+    gNBC = naive_bayes.GaussianNB()
 
 
 
-    NBC.fit(X_train, y_train)
+    gNBC.fit(X_train, y_train)
 
-    print(NBC.score(X_test, y_test))
+    print("Gaussian NBC")
+
+    print((gNBC.predict(X_test[:5])))
+
+    print(y_test[:5])
+
+    print(gNBC.score(X_test, y_test))
+
+    bNBC = naive_bayes.BernoulliNB()
+
+    bNBC.fit(X_train, y_train)
+
+    print("Bernoulli NBC")
+
+    print(bNBC.predict(X_test[:5]))
+
+    print(y_test[:5])
+
+    print(bNBC.score(X_test, y_test))
+
+
+
+
+
+    X_train_categorical = X_train[['AMT_INCOME_TOTAL', 'DAYS_BIRTH', 'DAYS_EMPLOYED']]
+    X_test_categorical = X_test[['AMT_INCOME_TOTAL', 'DAYS_BIRTH', 'DAYS_EMPLOYED']]
+
+    categorical_NBC = naive_bayes.CategoricalNB()
+
+    categorical_NBC.fit(X_train_categorical, y_train)
+
+    print("Categorical NBC (only 3 features")
+
+    print(categorical_NBC.predict(X_test_categorical[:5]))
+    print(y_test[:5])
+
+    print(categorical_NBC.score(X_test_categorical, y_test))
+
+
+
 
 
 if __name__ == '__main__':
@@ -204,7 +245,7 @@ if __name__ == '__main__':
 
     X_train, X_test, y_train, y_test = clean_and_get_data(record,y_label)
 
-    exit(0)
+    #exit(0)
 
     NBC(X_train, X_test, y_train, y_test)
 
