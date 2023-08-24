@@ -8,6 +8,8 @@ from sklearn import naive_bayes
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 import matplotlib.pyplot as plt
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import GridSearchCV
 
 applicant_record = 'C:\Dennis\Personal\Projects\ml_playground\data\credit_score\\application_record.csv'
 
@@ -261,6 +263,30 @@ def NBC(X_train, X_test, y_train, y_test):
 
     print(categorical_NBC.score(X_test_categorical, y_test))
 
+
+
+def DT(X_train, X_test, y_train, y_test):
+
+    num_samples = X_train.shape[0]
+    num_features = X_train.shape[1]
+
+
+    params_dict = {'criterion:': ['gini', 'entropy'],
+                   #'max_depth': [None, ],
+                   'min_sample_splits': [2, 4, 8, 16, 32, 64, 128],
+                   'max_features': [None, num_features / 2, num_features / 3, num_features / 4]}
+
+    dt = DecisionTreeClassifier()
+
+    random_search = RandomizedSearchCV(dt,
+                                       params_dict,
+                                       verbose=1,
+                                       return_train_score=True)
+
+    random_search.fit(X_train, y_train)
+
+
+    print(f"DT Acc:{random_search.score(X_test, y_test)}")
 
 
 
