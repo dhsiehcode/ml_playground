@@ -2,10 +2,11 @@ import numpy as np
 import pandas as pd
 import tools
 from sklearn.model_selection import train_test_split
-from sklearn.decomposition import PCA, KernelPCA
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn import naive_bayes
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
 import matplotlib.pyplot as plt
 
 applicant_record = 'C:\Dennis\Personal\Projects\ml_playground\data\credit_score\\application_record.csv'
@@ -113,8 +114,12 @@ def clean_and_get_data(record, outcome):
     return train_test_split(X, y, train_size=0.7, test_size=0.3)
 
 
-def data_visualization(df):
+def data_visualization(df, label):
     fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows=3, ncols=3)
+
+    df = df.join(label, on = 'ID')
+
+    df.rename(columns={0:"OUTCOME"}, inplace=True)
 
     # showing gender
 
@@ -156,31 +161,56 @@ def data_visualization(df):
 
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2)
 
-    id_birth = df[['ID', 'DAYS_BIRTH']]
+    id_birth = df[['ID', 'DAYS_BIRTH', 'OUTCOME']]
     id_birth.sort_index(inplace=True)
-    ax1.scatter(id_birth['ID'], id_birth['DAYS_BIRTH'])
-    ax1.set_title('Birth Date')
+    cpy = id_birth.copy()
+    cpy['DAYS_BIRTH'] = cpy['DAYS_BIRTH'].apply(lambda x:-1 * x / 365)
+    for outcome in cpy['OUTCOME'].unique():
+        ax1.scatter(cpy.loc[cpy['OUTCOME'] == outcome, 'ID'], cpy.loc[cpy['OUTCOME'] == outcome, 'DAYS_BIRTH'])
+    ax1.set_title('Age')
+    ax1.xlabel('ID number')
+    ax1.ylabel('Age in years')
 
-    id_employed = df[[ 'ID', 'DAYS_EMPLOYED']]
+
+    id_employed = df[['ID', 'DAYS_EMPLOYED', 'OUTCOME']]
     id_employed = id_employed[id_employed['DAYS_EMPLOYED'] < 0]
     id_employed.sort_index(inplace=True)
-    ax2.scatter(id_employed['ID'], id_employed['DAYS_EMPLOYED'])
+    cpy = id_employed.copy()
+    cpy['DAYS_EMPLOYED'] = cpy['DAYS_EMPLOYED'].apply(lambda x:-1 * x)
+    for outcome in cpy['OUTCOME'].unique():
+        ax2.scatter(cpy.loc[cpy['OUTCOME'] == outcome ,'ID'], cpy.loc[cpy['OUTCOME'] == outcome, 'DAYS_EMPLOYED'])
     ax2.set_title('Days Employed')
+    ax2.xlabel('ID number')
+    ax2.ylabel('Days employed')
 
-    id_unemployed = df[['ID', 'DAYS_EMPLOYED']]
+    id_unemployed = df[['ID', 'DAYS_EMPLOYED', 'OUTCOME']]
     id_unemployed = id_unemployed[id_unemployed['DAYS_EMPLOYED'] > 0]
     id_unemployed.sort_index(inplace=True)
-    ax3.scatter(id_unemployed['ID'], id_unemployed['DAYS_EMPLOYED'])
-    ax4.set_title('Days Unemployed')
+    cpy = id_unemployed.copy()
+    cpy['DAYS_EMPLOYED'] = cpy['DAYS_EMPLOYED'].apply(lambda x:-1 * x)
+    for outcome in cpy['OUTCOME'].unique():
+        ax3.scatter(cpy.loc[cpy['OUTCOME'] == outcome, 'ID'], cpy.loc[cpy['OUTCOME'] == outcome, 'DAYS_EMPLOYED'])
+    ax3.set_title('Days Unemployed')
+    ax3.xlabel('ID number')
+    ax3.ylabel('Days unemployed')
 
-    id_income = df[['ID', 'AMT_INCOME_TOTAL']]
+    id_income = df[['ID', 'AMT_INCOME_TOTAL', 'OUTCOME']]
     id_income.sort_index(inplace=True)
-    ax4.scatter(id_income['ID'], id_income['AMT_INCOME_TOTAL'])
+    for outcome in id_income['OUTCOME'].unique():
+        ax4.scatter(id_income.loc[id_income['OUTCOME'] == outcome, 'ID'], id_income.loc[id_income['OUTCOME'] == outcome, 'AMT_INCOME_TOTAL'])
     ax4.set_title('Income')
+    ax4.xlabel('ID number')
+    ax4.ylabel('Income')
 
     plt.tight_layout()
 
     fig.savefig('credit_score_plots')
+
+    ## some fancier stuff
+
+    #fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows=2, ncols=2)
+
+
 
 
 def NBC(X_train, X_test, y_train, y_test):
@@ -247,9 +277,9 @@ if __name__ == '__main__':
 
     #exit(0)
 
-    NBC(X_train, X_test, y_train, y_test)
+    #NBC(X_train, X_test, y_train, y_test)
 
-    #data_visualization(record)
+    data_visualization(record, y_label)
 
 
 
